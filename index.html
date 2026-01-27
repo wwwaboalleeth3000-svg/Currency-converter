@@ -255,25 +255,18 @@ function calculateTotal(){
   document.getElementById("sepNew").innerText = "مجموع فئات الليرة الجديدة: " + newSum;
   document.getElementById("sepUSD").innerText = "مجموع فئات الدولار: " + usdSum;
 
-  // الإدخال المباشر
-  let directOld = val("oldInput");
-  let directNew = val("newInput")*100;
-  let directUSD = val("usdInput")*rate;
+  // مجموع الفئات فقط (A)
+  let finalOld = oldSum + newSum*100 + usdSum*rate;
 
-  // المجموع النهائي بالليرة القديمة
-  let finalOld = oldSum + newSum*100 + usdSum*rate + directOld;
   document.getElementById("finalOld").innerText = "المجموع بالليرة القديمة: " + finalOld;
+  document.getElementById("finalNew").innerText = "المجموع بالليرة الجديدة: " + (finalOld/100);
+  document.getElementById("finalUSD").innerText = "المجموع بالدولار: " + (finalOld/rate).toFixed(2);
 
-  // المجموع النهائي بالليرة الجديدة
-  let finalNew = finalOld/100;
-  document.getElementById("finalNew").innerText = "المجموع بالليرة الجديدة: " + finalNew;
-
-  // المجموع النهائي بالدولار
-  let finalUSD = finalOld / rate;
-  document.getElementById("finalUSD").innerText = "المجموع بالدولار: " + finalUSD.toFixed(2);
+  // الإدخال المباشر = المبلغ الواجب قبضه
+  let mustOld = val("oldInput");
 
   // المتبقي
-  let remainOld = directOld - finalOld;
+  let remainOld = mustOld - finalOld;
   let remainNew = remainOld/100;
   let remainUSD = remainOld/rate;
 
