@@ -230,6 +230,10 @@ function fromUSD(){
   document.getElementById("newInput").value = (u * val("rate"))/100;
 }
 
+function format(x) {
+  return Number(x).toLocaleString('en-US');
+}
+  
 function calculateTotal(){
 
   let rate = val("rate");
@@ -251,16 +255,16 @@ function calculateTotal(){
     val("usd10")*10 + val("usd5")*5 + val("usd1")*1;
 
   // مجاميع منفصلة (C)
-  document.getElementById("sepOld").innerText = "مجموع فئات الليرة القديمة: " + oldSum;
-  document.getElementById("sepNew").innerText = "مجموع فئات الليرة الجديدة: " + newSum;
-  document.getElementById("sepUSD").innerText = "مجموع فئات الدولار: " + usdSum;
+document.getElementById("sepOld").innerText = "مجموع فئات الليرة القديمة: " + format(oldSum);
+document.getElementById("sepNew").innerText = "مجموع فئات الليرة الجديدة: " + format(newSum);
+document.getElementById("sepUSD").innerText = "مجموع فئات الدولار: " + format(usdSum);
 
   // مجموع الفئات فقط (A)
   let finalOld = oldSum + newSum*100 + usdSum*rate;
 
-  document.getElementById("finalOld").innerText = "المجموع بالليرة القديمة: " + finalOld;
-  document.getElementById("finalNew").innerText = "المجموع بالليرة الجديدة: " + (finalOld/100);
-  document.getElementById("finalUSD").innerText = "المجموع بالدولار: " + (finalOld/rate).toFixed(2);
+document.getElementById("finalOld").innerText = "المجموع بالليرة القديمة: " + format(finalOld);
+document.getElementById("finalNew").innerText = "المجموع بالليرة الجديدة: " + format(finalOld/100);
+document.getElementById("finalUSD").innerText = "المجموع بالدولار: " + format((finalOld/rate).toFixed(2));
 
   // الإدخال المباشر = المبلغ الواجب قبضه
   let mustOld = val("oldInput");
@@ -270,9 +274,9 @@ function calculateTotal(){
   let remainNew = remainOld/100;
   let remainUSD = remainOld/rate;
 
-  document.getElementById("remainOld").innerText = "المتبقي بالليرة القديمة: " + remainOld;
-  document.getElementById("remainNew").innerText = "المتبقي بالليرة الجديدة: " + remainNew;
-  document.getElementById("remainUSD").innerText = "المتبقي بالدولار: " + remainUSD.toFixed(2);
+document.getElementById("remainOld").innerText = "المتبقي بالليرة القديمة: " + format(remainOld);
+document.getElementById("remainNew").innerText = "المتبقي بالليرة الجديدة: " + format(remainNew);
+document.getElementById("remainUSD").innerText = "المتبقي بالدولار: " + format(remainUSD.toFixed(2));
 }
 
 function resetAll(){
@@ -310,3 +314,4 @@ detectSystemMode();
 
 </body>
 </html>
+
