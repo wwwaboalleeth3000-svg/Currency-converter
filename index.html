@@ -84,6 +84,33 @@
     #usd5 { background:#e2e3e5; }
     #usd1 { background:#fefefe; }
 
+    /* صندوق النتائج */
+    .results-box {
+      width: 90%;
+      margin: 25px auto;
+      border: 1px solid #aaa;
+      border-radius: 10px;
+      padding: 15px;
+    }
+
+    .results-grid {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .results-section {
+      width: 50%;
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .results-section h3 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
   </style>
 </head>
 <body>
@@ -127,150 +154,160 @@
     </div>
 
     <div class="section">
+      <h2>فئات الدولار</h2>
+      <label>100$:</label><input type="number" id="usd100" value="0" oninput="calculateTotal()">
+      <label>50$:</label><input type="number" id="usd50" value="0" oninput="calculateTotal()">
+      <label>20$:</label><input type="number" id="usd20" value="0" oninput="calculateTotal()">
+      <label>10$:</label><input type="number" id="usd10" value="0" oninput="calculateTotal()">
+      <label>5$:</label><input type="number" id="usd5" value="0" oninput="calculateTotal()">
+      <label>1$:</label><input type="number" id="usd1" value="0" oninput="calculateTotal()">
+    </div>
+
+    <div class="section">
       <h2>إدخال مباشر</h2>
       <label>المبلغ بالليرة القديمة:</label>
-      <input type="number" id="oldInput" oninput="convertToNew();calculateTotal();">
+      <input type="number" id="oldInput" oninput="fromOld();calculateTotal();">
+
       <label>المبلغ بالليرة الجديدة:</label>
-      <input type="number" id="newInput" oninput="convertToOld();calculateTotal();">
+      <input type="number" id="newInput" oninput="fromNew();calculateTotal();">
+
+      <label>المبلغ بالدولار:</label>
+      <input type="number" id="usdInput" oninput="fromUSD();calculateTotal();">
     </div>
 
   </div>
 
   <!-- النتائج -->
-  <div class="section" style="margin:20px auto; width:300px;">
-    <h2>النتائج</h2>
-    <p id="totalOld">المجموع بالليرة القديمة: 0</p>
-    <p id="totalNew">المجموع بالليرة الجديدة: 0</p>
-    <p id="remaining">المبلغ المتبقي: 0 قديمة / 0 جديدة</p>
+  <div class="results-box">
+    <div class="results-grid">
 
-    <hr>
+      <!-- C -->
+      <div class="results-section">
+        <h3>المجاميع المنفصلة</h3>
+        <p id="sepOld">مجموع فئات الليرة القديمة: 0</p>
+        <p id="sepNew">مجموع فئات الليرة الجديدة: 0</p>
+        <p id="sepUSD">مجموع فئات الدولار: 0</p>
+      </div>
 
-    <p id="usdFromLira">القيمة بالدولار: 0</p>
+      <!-- A -->
+      <div class="results-section">
+        <h3>المجموع النهائي</h3>
+        <p id="finalOld">المجموع بالليرة القديمة: 0</p>
+        <p id="finalNew">المجموع بالليرة الجديدة: 0</p>
+        <p id="finalUSD">المجموع بالدولار: 0</p>
 
-    <hr>
+        <hr>
 
-    <h3>فئات الدولار</h3>
-    <label>100$:</label><input type="number" id="usd100" value="0" oninput="calculateTotal()">
-    <label>50$:</label><input type="number" id="usd50" value="0" oninput="calculateTotal()">
-    <label>20$:</label><input type="number" id="usd20" value="0" oninput="calculateTotal()">
-    <label>10$:</label><input type="number" id="usd10" value="0" oninput="calculateTotal()">
-    <label>5$:</label><input type="number" id="usd5" value="0" oninput="calculateTotal()">
-    <label>1$:</label><input type="number" id="usd1" value="0" oninput="calculateTotal()">
+        <p id="remainOld">المتبقي بالليرة القديمة: 0</p>
+        <p id="remainNew">المتبقي بالليرة الجديدة: 0</p>
+        <p id="remainUSD">المتبقي بالدولار: 0</p>
+      </div>
 
-    <p id="totalUSD">مجموع الدولار: 0</p>
+    </div>
 
-    <button onclick="resetAll()">تصفير الإدخالات</button>
+    <button onclick="resetAll()" style="margin-top:15px;">تصفير الإدخالات</button>
   </div>
 
 <script>
 
-function convertToNew() {
-  let oldVal = document.getElementById("oldInput").value;
-  document.getElementById("newInput").value = oldVal ? oldVal / 100 : "";
+function val(id){ return Number(document.getElementById(id).value) || 0; }
+
+function fromOld(){
+  let old = val("oldInput");
+  document.getElementById("newInput").value = old/100;
+  document.getElementById("usdInput").value = old / val("rate");
 }
 
-function convertToOld() {
-  let newVal = document.getElementById("newInput").value;
-  document.getElementById("oldInput").value = newVal ? newVal * 100 : "";
+function fromNew(){
+  let n = val("newInput");
+  document.getElementById("oldInput").value = n*100;
+  document.getElementById("usdInput").value = (n*100) / val("rate");
 }
 
-function calculateTotal() {
+function fromUSD(){
+  let u = val("usdInput");
+  document.getElementById("oldInput").value = u * val("rate");
+  document.getElementById("newInput").value = (u * val("rate"))/100;
+}
 
-  let rate = Number(document.getElementById("rate").value) || 1;
+function calculateTotal(){
 
-  // الفئات الجديدة
-  let new10 = val("new10") * 10;
-  let new25 = val("new25") * 25;
-  let new50 = val("new50") * 50;
-  let new100 = val("new100") * 100;
-  let new200 = val("new200") * 200;
-  let new500 = val("new500") * 500;
+  let rate = val("rate");
 
-  // الفئات القديمة
-  let old50 = val("old50") * 50;
-  let old100 = val("old100") * 100;
-  let old200 = val("old200") * 200;
-  let old500 = val("old500") * 500;
-  let old1000 = val("old1000") * 1000;
-  let old2000 = val("old2000") * 2000;
-  let old5000 = val("old5000") * 5000;
+  // فئات جديدة
+  let newSum =
+    val("new10")*10 + val("new25")*25 + val("new50")*50 +
+    val("new100")*100 + val("new200")*200 + val("new500")*500;
 
-  let totalNew = new10 + new25 + new50 + new100 + new200 + new500 +
-                 (old50+old100+old200+old500+old1000+old2000+old5000)/100;
-
-  let totalOld = old50+old100+old200+old500+old1000+old2000+old5000 +
-                 (new10+new25+new50+new100+new200+new500)*100;
-
-  document.getElementById("totalOld").innerText = "المجموع بالليرة القديمة: " + totalOld;
-  document.getElementById("totalNew").innerText = "المجموع بالليرة الجديدة: " + totalNew;
-
-  let oldInput = val("oldInput");
-  let newInput = val("newInput");
-
-  let remainingOld = oldInput - totalOld;
-  let remainingNew = newInput - totalNew;
-
-  document.getElementById("remaining").innerText =
-    "المبلغ المتبقي: " + remainingOld + " قديمة / " + remainingNew + " جديدة";
-
-  // تحويل للدولار
-  let usdFromLira = totalOld / rate;
-  document.getElementById("usdFromLira").innerText =
-    "القيمة بالدولار: " + usdFromLira.toFixed(2);
+  // فئات قديمة
+  let oldSum =
+    val("old50")*50 + val("old100")*100 + val("old200")*200 +
+    val("old500")*500 + val("old1000")*1000 +
+    val("old2000")*2000 + val("old5000")*5000;
 
   // فئات الدولار
-  let usdTotal =
-    val("usd100")*100 +
-    val("usd50")*50 +
-    val("usd20")*20 +
-    val("usd10")*10 +
-    val("usd5")*5 +
-    val("usd1")*1;
+  let usdSum =
+    val("usd100")*100 + val("usd50")*50 + val("usd20")*20 +
+    val("usd10")*10 + val("usd5")*5 + val("usd1")*1;
 
-  let finalUSD = usdTotal + usdFromLira;
+  // مجاميع منفصلة (C)
+  document.getElementById("sepOld").innerText = "مجموع فئات الليرة القديمة: " + oldSum;
+  document.getElementById("sepNew").innerText = "مجموع فئات الليرة الجديدة: " + newSum;
+  document.getElementById("sepUSD").innerText = "مجموع فئات الدولار: " + usdSum;
 
-  document.getElementById("totalUSD").innerText =
-    "مجموع الدولار: " + finalUSD.toFixed(2);
+  // الإدخال المباشر
+  let directOld = val("oldInput");
+  let directNew = val("newInput")*100;
+  let directUSD = val("usdInput")*rate;
+
+  // المجموع النهائي بالليرة القديمة
+  let finalOld = oldSum + newSum*100 + usdSum*rate + directOld;
+  document.getElementById("finalOld").innerText = "المجموع بالليرة القديمة: " + finalOld;
+
+  // المجموع النهائي بالليرة الجديدة
+  let finalNew = finalOld/100;
+  document.getElementById("finalNew").innerText = "المجموع بالليرة الجديدة: " + finalNew;
+
+  // المجموع النهائي بالدولار
+  let finalUSD = finalOld / rate;
+  document.getElementById("finalUSD").innerText = "المجموع بالدولار: " + finalUSD.toFixed(2);
+
+  // المتبقي
+  let remainOld = directOld - finalOld;
+  let remainNew = remainOld/100;
+  let remainUSD = remainOld/rate;
+
+  document.getElementById("remainOld").innerText = "المتبقي بالليرة القديمة: " + remainOld;
+  document.getElementById("remainNew").innerText = "المتبقي بالليرة الجديدة: " + remainNew;
+  document.getElementById("remainUSD").innerText = "المتبقي بالدولار: " + remainUSD.toFixed(2);
 }
 
-function val(id) {
-  return Number(document.getElementById(id).value) || 0;
-}
-
-function resetAll() {
-  document.querySelectorAll("input").forEach(el => {
-    if (el.id !== "rate") el.value = 0;
+function resetAll(){
+  document.querySelectorAll("input").forEach(el=>{
+    if(el.id!=="rate") el.value=0;
   });
-
-  document.getElementById("oldInput").value = "";
-  document.getElementById("newInput").value = "";
-
   calculateTotal();
 }
 
-function toggleMode() {
-  let body = document.body;
-  if (body.classList.contains("day")) {
-    body.classList.remove("day"); 
+function toggleMode(){
+  let body=document.body;
+  if(body.classList.contains("day")){
+    body.classList.remove("day");
     body.classList.add("night");
-    localStorage.setItem("mode", "night");
+    localStorage.setItem("mode","night");
   } else {
-    body.classList.remove("night"); 
+    body.classList.remove("night");
     body.classList.add("day");
-    localStorage.setItem("mode", "day");
+    localStorage.setItem("mode","day");
   }
 }
 
-function detectSystemMode() {
-  let savedMode = localStorage.getItem("mode");
-  if (savedMode) {
-    document.body.classList.add(savedMode);
+function detectSystemMode(){
+  let saved=localStorage.getItem("mode");
+  if(saved){
+    document.body.classList.add(saved);
   } else {
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      document.body.classList.add("night");
-    } else {
-      document.body.classList.add("day");
-    }
+    document.body.classList.add("day");
   }
 }
 
@@ -279,4 +316,4 @@ detectSystemMode();
 </script>
 
 </body>
-    </html>
+</html>
