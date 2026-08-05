@@ -5,7 +5,7 @@
   <title>محول الليرة السورية</title>
   <style>
     body {
-      font-family: Tahoma;
+      font-family: Tahoma, sans-serif;
       direction: rtl;
       margin: 20px;
       transition: background 0.3s, color 0.3s;
@@ -125,7 +125,7 @@
   <!-- صندوق سعر الصرف -->
   <div class="section" style="margin: 0 auto; width: 250px;">
     <h2>سعر الصرف</h2>
-    <label>ليرة لكل دولار:</label>
+    <label>ليرة جديدة لكل دولار:</label>
     <input type="number" id="rate" value="0" oninput="calculateTotal()">
   </div>
 
@@ -181,7 +181,7 @@
   <div class="results-box">
     <div class="results-grid">
 
-      <!-- C -->
+      <!-- المجاميع المنفصلة -->
       <div class="results-section">
         <h3>المجاميع المنفصلة</h3>
         <p id="sepOld">مجموع فئات الليرة القديمة: 0</p>
@@ -189,7 +189,7 @@
         <p id="sepUSD">مجموع فئات الدولار: 0</p>
       </div>
 
-      <!-- A -->
+      <!-- المجموع النهائي -->
       <div class="results-section">
         <h3>المجموع النهائي</h3>
         <p id="finalOld">المجموع بالليرة القديمة: 0</p>
@@ -214,20 +214,25 @@ function val(id){ return Number(document.getElementById(id).value) || 0; }
 
 function fromOld(){
   let old = val("oldInput");
-  document.getElementById("newInput").value = old/100;
-  document.getElementById("usdInput").value = old / val("rate");
+  let rate = val("rate");
+  let newAmount = old / 100;
+  document.getElementById("newInput").value = newAmount;
+  document.getElementById("usdInput").value = rate > 0 ? (newAmount / rate).toFixed(2) : 0;
 }
 
 function fromNew(){
   let n = val("newInput");
-  document.getElementById("oldInput").value = n*100;
-  document.getElementById("usdInput").value = (n*100) / val("rate");
+  let rate = val("rate");
+  document.getElementById("oldInput").value = n * 100;
+  document.getElementById("usdInput").value = rate > 0 ? (n / rate).toFixed(2) : 0;
 }
 
 function fromUSD(){
   let u = val("usdInput");
-  document.getElementById("oldInput").value = u * val("rate");
-  document.getElementById("newInput").value = (u * val("rate"))/100;
+  let rate = val("rate");
+  let newAmount = u * rate;
+  document.getElementById("newInput").value = newAmount;
+  document.getElementById("oldInput").value = newAmount * 100;
 }
 
 function format(x) {
@@ -254,29 +259,31 @@ function calculateTotal(){
     val("usd100")*100 + val("usd50")*50 + val("usd20")*20 +
     val("usd10")*10 + val("usd5")*5 + val("usd1")*1;
 
-  // مجاميع منفصلة (C)
-document.getElementById("sepOld").innerText = "مجموع فئات الليرة القديمة: " + format(oldSum);
-document.getElementById("sepNew").innerText = "مجموع فئات الليرة الجديدة: " + format(newSum);
-document.getElementById("sepUSD").innerText = "مجموع فئات الدولار: " + format(usdSum);
+  // مجاميع منفصلة
+  document.getElementById("sepOld").innerText = "مجموع فئات الليرة القديمة: " + format(oldSum);
+  document.getElementById("sepNew").innerText = "مجموع فئات الليرة الجديدة: " + format(newSum);
+  document.getElementById("sepUSD").innerText = "مجموع فئات الدولار: " + format(usdSum);
 
-  // مجموع الفئات فقط (A)
-  let finalOld = oldSum + newSum*100 + usdSum*rate;
+  // المجموع النهائي محسوباً بالليرة الجديدة أولاً
+  let finalNew = (oldSum / 100) + newSum + (usdSum * rate);
+  let finalOld = finalNew * 100;
+  let finalUSD = rate > 0 ? (finalNew / rate) : 0;
 
-document.getElementById("finalOld").innerText = "المجموع بالليرة القديمة: " + format(finalOld);
-document.getElementById("finalNew").innerText = "المجموع بالليرة الجديدة: " + format(finalOld/100);
-document.getElementById("finalUSD").innerText = "المجموع بالدولار: " + format((finalOld/rate).toFixed(2));
+  document.getElementById("finalOld").innerText = "المجموع بالليرة القديمة: " + format(finalOld);
+  document.getElementById("finalNew").innerText = "المجموع بالليرة الجديدة: " + format(finalNew);
+  document.getElementById("finalUSD").innerText = "المجموع بالدولار: " + format(finalUSD.toFixed(2));
 
-  // الإدخال المباشر = المبلغ الواجب قبضه
-  let mustOld = val("oldInput");
+  // الإدخال المباشر = المبلغ الواجب قبضه (بالليرة الجديدة)
+  let mustNew = val("newInput");
 
   // المتبقي
-  let remainOld = mustOld - finalOld;
-  let remainNew = remainOld/100;
-  let remainUSD = remainOld/rate;
+  let remainNew = mustNew - finalNew;
+  let remainOld = remainNew * 100;
+  let remainUSD = rate > 0 ? (remainNew / rate) : 0;
 
-document.getElementById("remainOld").innerText = "المتبقي بالليرة القديمة: " + format(remainOld);
-document.getElementById("remainNew").innerText = "المتبقي بالليرة الجديدة: " + format(remainNew);
-document.getElementById("remainUSD").innerText = "المتبقي بالدولار: " + format(remainUSD.toFixed(2));
+  document.getElementById("remainOld").innerText = "المتبقي بالليرة القديمة: " + format(remainOld);
+  document.getElementById("remainNew").innerText = "المتبقي بالليرة الجديدة: " + format(remainNew);
+  document.getElementById("remainUSD").innerText = "المتبقي بالدولار: " + format(remainUSD.toFixed(2));
 }
 
 function resetAll(){
@@ -314,4 +321,3 @@ detectSystemMode();
 
 </body>
 </html>
-
