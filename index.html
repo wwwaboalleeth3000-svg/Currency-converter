@@ -5,7 +5,7 @@
   <title>محول الليرة السورية</title>
   <style>
     body {
-      font-family: Tahoma, sans-serif;
+      font-family: Tahoma;
       direction: rtl;
       margin: 20px;
       transition: background 0.3s, color 0.3s;
@@ -36,7 +36,7 @@
       border: 1px solid #ccc;
       padding: 15px;
       border-radius: 8px;
-      width: 250px;
+      width: 260px;
     }
 
     input {
@@ -53,10 +53,36 @@
       margin-top: 8px;
     }
 
+    /* توحيد مظهر الأزرار لتتبع الثيم العام */
     button {
       padding: 8px 15px;
       font-size: 14px;
       cursor: pointer;
+      border-radius: 5px;
+      border: 1px solid #888;
+      background-color: #f0f0f0;
+      color: inherit;
+    }
+
+    .night button {
+      background-color: #2d2d2d;
+      border-color: #555;
+      color: #eee;
+    }
+
+    .add-row {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 5px;
+    }
+
+    .add-row input {
+      width: 90px;
+    }
+
+    .add-row button {
+      padding: 6px 10px;
     }
 
     /* ألوان الفئات الجديدة */
@@ -66,15 +92,6 @@
     #new50 { background-color: #fff3cd; }
     #new25 { background-color: #cce5ff; }
     #new10 { background-color: #d4edda; }
-
-    /* ألوان الفئات القديمة */
-    #old5000 { background-color: #f8d7da; }
-    #old2000 { background-color: #f5c6cb; }
-    #old1000 { background-color: #e0ccff; }
-    #old500 { background-color: #ffe5b4; }
-    #old200 { background-color: #fff3cd; }
-    #old100 { background-color: #cce5ff; }
-    #old50 { background-color: #d4edda; }
 
     /* ألوان فئات الدولار */
     #usd100 { background:#d1ecf1; }
@@ -111,6 +128,17 @@
       margin-bottom: 10px;
     }
 
+    /* تنسيق ألوان المتبقي (أحمر أو أخضر) */
+    .text-red {
+      color: #d9534f;
+      font-weight: bold;
+    }
+
+    .text-green {
+      color: #5cb85c;
+      font-weight: bold;
+    }
+
   </style>
 </head>
 <body>
@@ -122,7 +150,7 @@
 
   <h1>💰 تطبيق محول الليرة السورية</h1>
 
-  <!-- صندوق سعر الصرف (بالجديد) -->
+  <!-- صندوق سعر الصرف -->
   <div class="section" style="margin: 0 auto; width: 250px;">
     <h2>سعر الصرف</h2>
     <label>ليرة جديدة لكل دولار:</label>
@@ -131,17 +159,6 @@
 
   <!-- الفئات -->
   <div class="container">
-
-    <div class="section">
-      <h2>الفئات القديمة</h2>
-      <label>5000:</label><input type="number" id="old5000" value="0" onfocus="this.select()" oninput="calculateTotal()">
-      <label>2000:</label><input type="number" id="old2000" value="0" onfocus="this.select()" oninput="calculateTotal()">
-      <label>1000:</label><input type="number" id="old1000" value="0" onfocus="this.select()" oninput="calculateTotal()">
-      <label>500:</label><input type="number" id="old500" value="0" onfocus="this.select()" oninput="calculateTotal()">
-      <label>200:</label><input type="number" id="old200" value="0" onfocus="this.select()" oninput="calculateTotal()">
-      <label>100:</label><input type="number" id="old100" value="0" onfocus="this.select()" oninput="calculateTotal()">
-      <label>50:</label><input type="number" id="old50" value="0" onfocus="this.select()" oninput="calculateTotal()">
-    </div>
 
     <div class="section">
       <h2>الفئات الجديدة</h2>
@@ -166,13 +183,33 @@
     <div class="section">
       <h2>إدخال مباشر</h2>
       <label>المبلغ بالليرة القديمة:</label>
-      <input type="number" id="oldInput" onfocus="this.select()" oninput="fromOld();calculateTotal();">
+      <input type="number" id="oldInput" value="0" onfocus="this.select()" oninput="fromOld();calculateTotal();">
 
       <label>المبلغ بالليرة الجديدة:</label>
-      <input type="number" id="newInput" onfocus="this.select()" oninput="fromNew();calculateTotal();">
+      <input type="number" id="newInput" value="0" onfocus="this.select()" oninput="fromNew();calculateTotal();">
 
       <label>المبلغ بالدولار:</label>
-      <input type="number" id="usdInput" onfocus="this.select()" oninput="fromUSD();calculateTotal();">
+      <input type="number" id="usdInput" value="0" onfocus="this.select()" oninput="fromUSD();calculateTotal();">
+
+      <hr style="margin: 12px 0; border: 0; border-top: 1px dashed #aaa;">
+
+      <label style="color: #007bff; font-weight: bold;">إضافة للمبلغ (قديم):</label>
+      <div class="add-row">
+        <input type="number" id="addOld" value="0" onfocus="this.select()" onkeypress="handleEnter(event, 'old')">
+        <button onclick="addToInput('old')">إضافة ➕</button>
+      </div>
+
+      <label style="color: #007bff; font-weight: bold;">إضافة للمبلغ (جديد):</label>
+      <div class="add-row">
+        <input type="number" id="addNew" value="0" onfocus="this.select()" onkeypress="handleEnter(event, 'new')">
+        <button onclick="addToInput('new')">إضافة ➕</button>
+      </div>
+
+      <label style="color: #007bff; font-weight: bold;">إضافة للمبلغ ($):</label>
+      <div class="add-row">
+        <input type="number" id="addUSD" value="0" onfocus="this.select()" onkeypress="handleEnter(event, 'usd')">
+        <button onclick="addToInput('usd')">إضافة ➕</button>
+      </div>
     </div>
 
   </div>
@@ -184,7 +221,6 @@
       <!-- C -->
       <div class="results-section">
         <h3>المجاميع المنفصلة</h3>
-        <p id="sepOld">مجموع فئات الليرة القديمة: 0</p>
         <p id="sepNew">مجموع فئات الليرة الجديدة: 0</p>
         <p id="sepUSD">مجموع فئات الدولار: 0</p>
       </div>
@@ -198,9 +234,9 @@
 
         <hr>
 
-        <p id="remainOld">المتبقي بالليرة القديمة: 0</p>
-        <p id="remainNew">المتبقي بالليرة الجديدة: 0</p>
-        <p id="remainUSD">المتبقي بالدولار: 0</p>
+        <p>المتبقي بالليرة القديمة: <span id="remainOld">0</span></p>
+        <p>المتبقي بالليرة الجديدة: <span id="remainNew">0</span></p>
+        <p>المتبقي بالدولار: <span id="remainUSD">0</span></p>
       </div>
 
     </div>
@@ -235,24 +271,46 @@ function fromUSD(){
   document.getElementById("oldInput").value = newAmount * 100;
 }
 
+function handleEnter(event, type) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    addToInput(type);
+  }
+}
+
+function addToInput(type) {
+  let rate = val("rate");
+  if (type === 'old') {
+    let add = val("addOld");
+    document.getElementById("oldInput").value = val("oldInput") + add;
+    document.getElementById("addOld").value = 0;
+    fromOld();
+  } else if (type === 'new') {
+    let add = val("addNew");
+    document.getElementById("newInput").value = val("newInput") + add;
+    document.getElementById("addNew").value = 0;
+    fromNew();
+  } else if (type === 'usd') {
+    let add = val("addUSD");
+    document.getElementById("usdInput").value = val("usdInput") + add;
+    document.getElementById("addUSD").value = 0;
+    fromUSD();
+  }
+  calculateTotal();
+}
+
 function format(x) {
   return Number(x).toLocaleString('en-US');
 }
   
 function calculateTotal(){
 
-  let rate = val("rate"); // سعر الصرف بالليرة الجديدة
+  let rate = val("rate");
 
   // فئات جديدة
   let newSum =
     val("new10")*10 + val("new25")*25 + val("new50")*50 +
     val("new100")*100 + val("new200")*200 + val("new500")*500;
-
-  // فئات قديمة
-  let oldSum =
-    val("old50")*50 + val("old100")*100 + val("old200")*200 +
-    val("old500")*500 + val("old1000")*1000 +
-    val("old2000")*2000 + val("old5000")*5000;
 
   // فئات الدولار
   let usdSum =
@@ -260,12 +318,11 @@ function calculateTotal(){
     val("usd10")*10 + val("usd5")*5 + val("usd1")*1;
 
   // مجاميع منفصلة (C)
-  document.getElementById("sepOld").innerText = "مجموع فئات الليرة القديمة: " + format(oldSum);
   document.getElementById("sepNew").innerText = "مجموع فئات الليرة الجديدة: " + format(newSum);
   document.getElementById("sepUSD").innerText = "مجموع فئات الدولار: " + format(usdSum);
 
-  // حساب المجموع الكلي بالليرة الجديدة أولاً ثم التحويل للقديم والدولار
-  let finalNew = (oldSum / 100) + newSum + (usdSum * rate);
+  // مجموع الفئات المتوفرة (A) محسوباً بالليرة الجديدة أولاً
+  let finalNew = newSum + (usdSum * rate);
   let finalOld = finalNew * 100;
   let finalUSD = rate > 0 ? (finalNew / rate) : 0;
 
@@ -273,17 +330,32 @@ function calculateTotal(){
   document.getElementById("finalNew").innerText = "المجموع بالليرة الجديدة: " + format(finalNew);
   document.getElementById("finalUSD").innerText = "المجموع بالدولار: " + format(finalUSD.toFixed(2));
 
-  // المبلغ المطلوب (من حقل الإدخال المباشر بالليرة الجديدة)
+  // المبلغ الواجب قبضه من الإدخال المباشر
   let mustNew = val("newInput");
 
-  // المتبقي
+  // المتبقي (المطلوب ناقص المتوفر)
   let remainNew = mustNew - finalNew;
   let remainOld = remainNew * 100;
   let remainUSD = rate > 0 ? (remainNew / rate) : 0;
 
-  document.getElementById("remainOld").innerText = "المتبقي بالليرة القديمة: " + format(remainOld);
-  document.getElementById("remainNew").innerText = "المتبقي بالليرة الجديدة: " + format(remainNew);
-  document.getElementById("remainUSD").innerText = "المتبقي بالدولار: " + format(remainUSD.toFixed(2));
+  let rOldEl = document.getElementById("remainOld");
+  let rNewEl = document.getElementById("remainNew");
+  let rUSDEl = document.getElementById("remainUSD");
+
+  rOldEl.innerText = format(remainOld);
+  rNewEl.innerText = format(remainNew);
+  rUSDEl.innerText = format(remainUSD.toFixed(2));
+
+  // تطبيق شرط الألوان (إذا كان المتبقي أكبر من 0 يعني أصغر من المطلوب -> أحمر، وإذا مساوي أو أصغر -> أخضر)
+  if (remainNew > 0) {
+    rOldEl.className = "text-red";
+    rNewEl.className = "text-red";
+    rUSDEl.className = "text-red";
+  } else {
+    rOldEl.className = "text-green";
+    rNewEl.className = "text-green";
+    rUSDEl.className = "text-green";
+  }
 }
 
 function resetAll(){
@@ -316,6 +388,7 @@ function detectSystemMode(){
 }
 
 detectSystemMode();
+calculateTotal();
 
 </script>
 
