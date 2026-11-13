@@ -1,167 +1,297 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8">
-  <title>محول الليرة السورية</title>
+  <title>CashFlow SYP</title>
   <style>
+    :root {
+      --bg-day: #f4f6f9;
+      --card-bg-day: #ffffff;
+      --text-day: #333333;
+      --border-day: #e2e8f0;
+      
+      --bg-night: #0f172a;
+      --card-bg-night: #1e293b;
+      --text-night: #f8fafc;
+      --border-night: #334155;
+      
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --success: #10b981;
+      --danger: #ef4444;
+    }
+
     body {
-      font-family: Tahoma;
-      direction: rtl;
-      margin: 20px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
       transition: background 0.3s, color 0.3s;
     }
 
-    .day { background: #fdfdfd; color: #222; }
-    .night { background: #1e1e1e; color: #eee; }
+    body.day { background: var(--bg-day); color: var(--text-day); }
+    body.night { background: var(--bg-night); color: var(--text-night); }
+
+    /* تثبيت شريط الأزرار في أعلى اليسار دائماً (زر الثيم أقصى اليسار، وجنبه زر اللغة) */
+    .top-bar {
+      position: fixed;
+      top: 15px;
+      left: 20px;
+      display: flex;
+      gap: 8px;
+      z-index: 1000;
+    }
+
+    .top-bar button {
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 1px solid var(--border-day);
+      background-color: #ffffff;
+      color: inherit;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      transition: all 0.2s;
+    }
+
+    body.night .top-bar button {
+      background-color: #334155;
+      border-color: var(--border-night);
+      color: #f8fafc;
+    }
+
+    .header-container {
+      text-align: center;
+      margin-top: 15px;
+      margin-bottom: 25px;
+    }
 
     h1 {
-      text-align: center;
-      margin-bottom: 10px;
+      margin: 0;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
     }
 
-    .top-bar {
-      display: flex;
-      justify-content: flex-end;
-      margin-bottom: 10px;
-    }
-
+    /* الحفاظ على البطاقات بجانب بعضها بشكل مرن */
     .container {
       display: flex;
       justify-content: center;
-      gap: 30px;
-      flex-wrap: wrap;
+      gap: 20px;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding-bottom: 10px;
     }
 
     .section {
-      border: 1px solid #ccc;
-      padding: 15px;
-      border-radius: 8px;
-      width: 260px;
+      border: 1px solid var(--border-day);
+      padding: 18px;
+      border-radius: 12px;
+      width: 300px;
+      min-width: 280px;
+      box-sizing: border-box;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      transition: background 0.3s, border-color 0.3s;
     }
 
+    body.night .section {
+      border-color: var(--border-night);
+      background-color: var(--card-bg-night);
+    }
+
+    body.day .section {
+      background-color: var(--card-bg-day);
+    }
+
+    h2 {
+      font-size: 15px;
+      margin-top: 0;
+      margin-bottom: 12px;
+      border-bottom: 2px solid var(--border-day);
+      padding-bottom: 6px;
+    }
+
+    body.night h2 { border-bottom-color: var(--border-night); }
+
     input {
-      padding: 8px;
+      padding: 7px 10px;
       margin: 5px 0;
-      width: 150px;
-      font-size: 16px;
-      border-radius: 5px;
+      width: 100%;
+      box-sizing: border-box;
+      font-size: 14px;
+      border-radius: 6px;
+      border: 1px solid var(--border-day);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    body.night input {
+      background-color: #0f172a;
+      color: #f8fafc;
+      border-color: var(--border-night);
+    }
+
+    input:focus {
+      border-color: var(--primary);
     }
 
     label {
-      font-size: 16px;
+      font-size: 13px;
       display: block;
-      margin-top: 8px;
+      margin-top: 5px;
+      color: #64748b;
     }
 
-    /* توحيد مظهر الأزرار لتتبع الثيم العام */
+    body.night label { color: #94a3b8; }
+
     button {
-      padding: 8px 15px;
+      padding: 8px 16px;
       font-size: 14px;
       cursor: pointer;
-      border-radius: 5px;
-      border: 1px solid #888;
-      background-color: #f0f0f0;
+      border-radius: 6px;
+      border: 1px solid var(--border-day);
+      background-color: #ffffff;
       color: inherit;
+      transition: all 0.2s;
     }
 
-    .night button {
-      background-color: #2d2d2d;
-      border-color: #555;
-      color: #eee;
+    body.night button {
+      background-color: #334155;
+      border-color: var(--border-night);
+      color: #f8fafc;
+    }
+
+    button:hover {
+      background-color: var(--border-day);
+    }
+
+    body.night button:hover {
+      background-color: #475569;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+    }
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
     }
 
     .add-row {
       display: flex;
       align-items: center;
-      gap: 5px;
-      margin-top: 5px;
+      gap: 6px;
+      margin-top: 3px;
     }
 
     .add-row input {
-      width: 90px;
+      flex: 1;
     }
 
-    .add-row button {
-      padding: 6px 10px;
-    }
+    /* ألوان الفئات الجديدة والدولار */
+    #new500 { background-color: rgba(245, 198, 203, 0.25); }
+    #new200 { background-color: rgba(224, 204, 255, 0.25); }
+    #new100 { background-color: rgba(255, 229, 180, 0.25); }
+    #new50  { background-color: rgba(255, 243, 205, 0.25); }
+    #new25  { background-color: rgba(204, 229, 255, 0.25); }
+    #new10  { background-color: rgba(212, 237, 218, 0.25); }
 
-    /* ألوان الفئات الجديدة */
-    #new500 { background-color: #f5c6cb; }
-    #new200 { background-color: #e0ccff; }
-    #new100 { background-color: #ffe5b4; }
-    #new50 { background-color: #fff3cd; }
-    #new25 { background-color: #cce5ff; }
-    #new10 { background-color: #d4edda; }
-
-    /* ألوان فئات الدولار */
-    #usd100 { background:#d1ecf1; }
-    #usd50 { background:#f8d7da; }
-    #usd20 { background:#fff3cd; }
-    #usd10 { background:#d4edda; }
-    #usd5 { background:#e2e3e5; }
-    #usd1 { background:#fefefe; }
+    #usd100 { background: rgba(209, 236, 241, 0.25); }
+    #usd50  { background: rgba(248, 215, 218, 0.25); }
+    #usd20  { background: rgba(255, 243, 205, 0.25); }
+    #usd10  { background: rgba(212, 237, 218, 0.25); }
+    #usd5   { background: rgba(226, 227, 229, 0.25); }
+    #usd1   { background: rgba(254, 254, 254, 0.1); }
 
     /* صندوق النتائج */
     .results-box {
       width: 90%;
+      max-width: 940px;
       margin: 25px auto;
-      border: 1px solid #aaa;
-      border-radius: 10px;
-      padding: 15px;
+      border: 1px solid var(--border-day);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    body.night .results-box {
+      border-color: var(--border-night);
+      background-color: var(--card-bg-night);
+    }
+
+    body.day .results-box {
+      background-color: var(--card-bg-day);
     }
 
     .results-grid {
       display: flex;
       justify-content: space-between;
       gap: 20px;
+      flex-wrap: wrap;
     }
 
     .results-section {
-      width: 50%;
-      border: 1px solid #ccc;
-      padding: 10px;
+      flex: 1;
+      min-width: 280px;
+      border: 1px solid var(--border-day);
+      padding: 15px;
       border-radius: 8px;
     }
 
+    body.night .results-section { border-color: var(--border-night); }
+
     .results-section h3 {
       text-align: center;
-      margin-bottom: 10px;
+      margin-top: 0;
+      margin-bottom: 12px;
+      font-size: 15px;
     }
 
-    /* تنسيق ألوان المتبقي (أحمر أو أخضر) */
-    .text-red {
-      color: #d9534f;
-      font-weight: bold;
+    .results-section p {
+      margin: 8px 0;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
     }
 
-    .text-green {
-      color: #5cb85c;
-      font-weight: bold;
-    }
+    .text-red { color: var(--danger); font-weight: bold; }
+    .text-green { color: var(--success); font-weight: bold; }
 
+    .action-footer {
+      margin-top: 15px;
+      display: flex;
+      justify-content: flex-end;
+    }
   </style>
 </head>
-<body>
+<body class="day">
 
-  <!-- زر تبديل الوضع -->
+  <!-- الأزرار العلوية ثابتة تماماً: زر الثيم أولاً (يسار)، وزر اللغة جنبه -->
   <div class="top-bar">
-    <button onclick="toggleMode()">تبديل الوضع 🌗</button>
+    <button onclick="toggleMode()">🌗</button>
+    <button onclick="toggleLanguage()" id="langBtnText">ع</button>
   </div>
 
-  <h1>💰 تطبيق محول الليرة السورية</h1>
+  <div class="header-container">
+    <h1 id="appTitle">CashFlow SYP</h1>
+  </div>
 
   <!-- صندوق سعر الصرف -->
-  <div class="section" style="margin: 0 auto; width: 250px;">
-    <h2>سعر الصرف</h2>
-    <label>ليرة جديدة لكل دولار:</label>
+  <div class="section" style="margin: 0 auto 20px auto; width: 300px;">
+    <h2 id="rateTitle">Exchange Rate</h2>
+    <label id="rateLabel">New SYP per 1 USD:</label>
     <input type="number" id="rate" value="0" onfocus="this.select()" oninput="calculateTotal()">
   </div>
 
-  <!-- الفئات -->
+  <!-- الفئات والإدخال بجانب بعضها -->
   <div class="container">
 
+    <!-- الفئات الجديدة -->
     <div class="section">
-      <h2>الفئات الجديدة</h2>
+      <h2 id="newNotesTitle">New Banknotes (Count)</h2>
       <label>500:</label><input type="number" id="new500" value="0" onfocus="this.select()" oninput="calculateTotal()">
       <label>200:</label><input type="number" id="new200" value="0" onfocus="this.select()" oninput="calculateTotal()">
       <label>100:</label><input type="number" id="new100" value="0" onfocus="this.select()" oninput="calculateTotal()">
@@ -170,8 +300,9 @@
       <label>10:</label><input type="number" id="new10" value="0" onfocus="this.select()" oninput="calculateTotal()">
     </div>
 
+    <!-- فئات الدولار -->
     <div class="section">
-      <h2>فئات الدولار</h2>
+      <h2 id="usdNotesTitle">USD Banknotes (Count)</h2>
       <label>100$:</label><input type="number" id="usd100" value="0" onfocus="this.select()" oninput="calculateTotal()">
       <label>50$:</label><input type="number" id="usd50" value="0" onfocus="this.select()" oninput="calculateTotal()">
       <label>20$:</label><input type="number" id="usd20" value="0" onfocus="this.select()" oninput="calculateTotal()">
@@ -180,35 +311,36 @@
       <label>1$:</label><input type="number" id="usd1" value="0" onfocus="this.select()" oninput="calculateTotal()">
     </div>
 
+    <!-- الإدخال المباشر -->
     <div class="section">
-      <h2>إدخال مباشر</h2>
-      <label>المبلغ بالليرة القديمة:</label>
-      <input type="number" id="oldInput" value="0" onfocus="this.select()" oninput="fromOld();calculateTotal();">
+      <h2 id="directInputTitle">Direct Input & Add</h2>
+      <label id="oldInputLabel">Old SYP Amount:</label>
+      <input type="number" id="oldInput" value="0" onfocus="this.select()" oninput="calculateTotal()">
 
-      <label>المبلغ بالليرة الجديدة:</label>
+      <label id="newInputLabel">New SYP Amount:</label>
       <input type="number" id="newInput" value="0" onfocus="this.select()" oninput="fromNew();calculateTotal();">
 
-      <label>المبلغ بالدولار:</label>
+      <label id="usdInputLabel">USD Amount:</label>
       <input type="number" id="usdInput" value="0" onfocus="this.select()" oninput="fromUSD();calculateTotal();">
 
-      <hr style="margin: 12px 0; border: 0; border-top: 1px dashed #aaa;">
+      <hr style="margin: 10px 0; border: 0; border-top: 1px solid var(--border-day);">
 
-      <label style="color: #007bff; font-weight: bold;">إضافة للمبلغ (قديم):</label>
+      <label id="addOldLabel" style="color: var(--primary);">Add Old SYP:</label>
       <div class="add-row">
         <input type="number" id="addOld" value="0" onfocus="this.select()" onkeypress="handleEnter(event, 'old')">
-        <button onclick="addToInput('old')">إضافة ➕</button>
+        <button class="btn-primary" onclick="addToInput('old')">+</button>
       </div>
 
-      <label style="color: #007bff; font-weight: bold;">إضافة للمبلغ (جديد):</label>
+      <label id="addNewLabel" style="color: var(--primary);">Add New SYP:</label>
       <div class="add-row">
         <input type="number" id="addNew" value="0" onfocus="this.select()" onkeypress="handleEnter(event, 'new')">
-        <button onclick="addToInput('new')">إضافة ➕</button>
+        <button class="btn-primary" onclick="addToInput('new')">+</button>
       </div>
 
-      <label style="color: #007bff; font-weight: bold;">إضافة للمبلغ ($):</label>
+      <label id="addUSDLabel" style="color: var(--primary);">Add USD ($):</label>
       <div class="add-row">
         <input type="number" id="addUSD" value="0" onfocus="this.select()" onkeypress="handleEnter(event, 'usd')">
-        <button onclick="addToInput('usd')">إضافة ➕</button>
+        <button class="btn-primary" onclick="addToInput('usd')">+</button>
       </div>
     </div>
 
@@ -218,43 +350,111 @@
   <div class="results-box">
     <div class="results-grid">
 
-      <!-- C -->
+      <!-- المجاميع المنفصلة -->
       <div class="results-section">
-        <h3>المجاميع المنفصلة</h3>
-        <p id="sepNew">مجموع فئات الليرة الجديدة: 0</p>
-        <p id="sepUSD">مجموع فئات الدولار: 0</p>
+        <h3 id="sepTotalsTitle">Separate Totals</h3>
+        <p><span id="lblSepNew">New Notes Total:</span> <strong id="sepNew">0</strong></p>
+        <p><span id="lblSepUSD">USD Notes Total:</span> <strong id="sepUSD">0</strong></p>
       </div>
 
-      <!-- A -->
+      <!-- المجموع النهائي والمتبقي -->
       <div class="results-section">
-        <h3>المجموع النهائي</h3>
-        <p id="finalOld">المجموع بالليرة القديمة: 0</p>
-        <p id="finalNew">المجموع بالليرة الجديدة: 0</p>
-        <p id="finalUSD">المجموع بالدولار: 0</p>
+        <h3 id="finalTotalsTitle">Grand Total & Remaining</h3>
+        <p><span id="lblFinalOld">Final Old SYP:</span> <strong id="finalOld">0</strong></p>
+        <p><span id="lblFinalNew">Final New SYP:</span> <strong id="finalNew">0</strong></p>
+        <p><span id="lblFinalUSD">Final USD:</span> <strong id="finalUSD">0</strong></p>
 
-        <hr>
+        <hr style="border: 0; border-top: 1px dashed var(--border-day); margin: 8px 0;">
 
-        <p>المتبقي بالليرة القديمة: <span id="remainOld">0</span></p>
-        <p>المتبقي بالليرة الجديدة: <span id="remainNew">0</span></p>
-        <p>المتبقي بالدولار: <span id="remainUSD">0</span></p>
+        <p><span id="lblRemainOld">Remaining Old:</span> <span id="remainOld" class="text-green">0</span></p>
+        <p><span id="lblRemainNew">Remaining New:</span> <span id="remainNew" class="text-green">0</span></p>
+        <p><span id="lblRemainUSD">Remaining USD:</span> <span id="remainUSD" class="text-green">0</span></p>
       </div>
 
     </div>
 
-    <button onclick="resetAll()" style="margin-top:15px;">تصفير الإدخالات</button>
+    <div class="action-footer">
+      <button onclick="resetAll()" id="resetBtn">Reset All</button>
+    </div>
   </div>
 
 <script>
+let currentLang = 'en';
+
+const translations = {
+  en: {
+    langBtnText: "ع",
+    appTitle: "CashFlow SYP",
+    rateTitle: "Exchange Rate",
+    rateLabel: "New SYP per 1 USD:",
+    newNotesTitle: "New Banknotes (Count)",
+    usdNotesTitle: "USD Banknotes (Count)",
+    directInputTitle: "Direct Input & Add",
+    oldInputLabel: "Old SYP Amount:",
+    newInputLabel: "New SYP Amount:",
+    usdInputLabel: "USD Amount:",
+    addOldLabel: "Add Old SYP:",
+    addNewLabel: "Add New SYP:",
+    addUSDLabel: "Add USD ($):",
+    sepTotalsTitle: "Separate Totals",
+    lblSepNew: "New Notes Total:",
+    lblSepUSD: "USD Notes Total:",
+    finalTotalsTitle: "Grand Total & Remaining",
+    lblFinalOld: "Final Old SYP:",
+    lblFinalNew: "Final New SYP:",
+    lblFinalUSD: "Final USD:",
+    lblRemainOld: "Remaining Old:",
+    lblRemainNew: "Remaining New:",
+    lblRemainUSD: "Remaining USD:",
+    resetBtn: "Reset All"
+  },
+  ar: {
+    langBtnText: "En",
+    appTitle: "CashFlow SYP",
+    rateTitle: "سعر الصرف",
+    rateLabel: "ليرة جديدة لكل 1 دولار:",
+    newNotesTitle: "الفئات الجديدة (عدد الأوراق)",
+    usdNotesTitle: "فئات الدولار (عدد الأوراق)",
+    directInputTitle: "الإدخال المباشر والإضافة",
+    oldInputLabel: "المبلغ بالليرة القديمة:",
+    newInputLabel: "المبلغ بالليرة الجديدة:",
+    usdInputLabel: "المبلغ بالدولار:",
+    addOldLabel: "إضافة للمبلغ (قديم):",
+    addNewLabel: "إضافة للمبلغ (جديد):",
+    addUSDLabel: "إضافة للمبلغ ($):",
+    sepTotalsTitle: "المجاميع المنفصلة",
+    lblSepNew: "مجموع الفئات الجديدة:",
+    lblSepUSD: "مجموع فئات الدولار:",
+    finalTotalsTitle: "المجموع النهائي والمتبقي",
+    lblFinalOld: "المجموع بالليرة القديمة:",
+    lblFinalNew: "المجموع بالليرة الجديدة:",
+    lblFinalUSD: "المجموع بالدولار:",
+    lblRemainOld: "المتبقي بالليرة القديمة:",
+    lblRemainNew: "المتبقي بالليرة الجديدة:",
+    lblRemainUSD: "المتبقي بالدولار:",
+    resetBtn: "تصفير الإدخالات"
+  }
+};
+
+function setLanguage(lang) {
+  currentLang = lang;
+  localStorage.setItem("lang", currentLang);
+  document.documentElement.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
+  document.documentElement.setAttribute('lang', currentLang);
+  
+  let t = translations[currentLang];
+  for (let key in t) {
+    let el = document.getElementById(key);
+    if (el) el.innerText = t[key];
+  }
+}
+
+function toggleLanguage() {
+  let newLang = currentLang === 'en' ? 'ar' : 'en';
+  setLanguage(newLang);
+}
 
 function val(id){ return Number(document.getElementById(id).value) || 0; }
-
-function fromOld(){
-  let old = val("oldInput");
-  let rate = val("rate");
-  let newAmount = old / 100;
-  document.getElementById("newInput").value = newAmount;
-  document.getElementById("usdInput").value = rate > 0 ? (newAmount / rate).toFixed(2) : 0;
-}
 
 function fromNew(){
   let n = val("newInput");
@@ -284,15 +484,18 @@ function addToInput(type) {
     let add = val("addOld");
     document.getElementById("oldInput").value = val("oldInput") + add;
     document.getElementById("addOld").value = 0;
-    fromOld();
   } else if (type === 'new') {
     let add = val("addNew");
-    document.getElementById("newInput").value = val("newInput") + add;
+    let currentNew = val("newInput");
+    let totalNew = currentNew + add;
+    document.getElementById("newInput").value = totalNew;
     document.getElementById("addNew").value = 0;
     fromNew();
   } else if (type === 'usd') {
     let add = val("addUSD");
-    document.getElementById("usdInput").value = val("usdInput") + add;
+    let currentUSD = val("usdInput");
+    let totalUSD = currentUSD + add;
+    document.getElementById("usdInput").value = totalUSD;
     document.getElementById("addUSD").value = 0;
     fromUSD();
   }
@@ -304,36 +507,29 @@ function format(x) {
 }
   
 function calculateTotal(){
-
   let rate = val("rate");
 
-  // فئات جديدة
   let newSum =
     val("new10")*10 + val("new25")*25 + val("new50")*50 +
     val("new100")*100 + val("new200")*200 + val("new500")*500;
 
-  // فئات الدولار
   let usdSum =
     val("usd100")*100 + val("usd50")*50 + val("usd20")*20 +
     val("usd10")*10 + val("usd5")*5 + val("usd1")*1;
 
-  // مجاميع منفصلة (C)
-  document.getElementById("sepNew").innerText = "مجموع فئات الليرة الجديدة: " + format(newSum);
-  document.getElementById("sepUSD").innerText = "مجموع فئات الدولار: " + format(usdSum);
+  document.getElementById("sepNew").innerText = format(newSum);
+  document.getElementById("sepUSD").innerText = format(usdSum);
 
-  // مجموع الفئات المتوفرة (A) محسوباً بالليرة الجديدة أولاً
   let finalNew = newSum + (usdSum * rate);
   let finalOld = finalNew * 100;
   let finalUSD = rate > 0 ? (finalNew / rate) : 0;
 
-  document.getElementById("finalOld").innerText = "المجموع بالليرة القديمة: " + format(finalOld);
-  document.getElementById("finalNew").innerText = "المجموع بالليرة الجديدة: " + format(finalNew);
-  document.getElementById("finalUSD").innerText = "المجموع بالدولار: " + format(finalUSD.toFixed(2));
+  document.getElementById("finalOld").innerText = format(finalOld);
+  document.getElementById("finalNew").innerText = format(finalNew);
+  document.getElementById("finalUSD").innerText = format(finalUSD.toFixed(2));
 
-  // المبلغ الواجب قبضه من الإدخال المباشر
   let mustNew = val("newInput");
 
-  // المتبقي (المطلوب ناقص المتوفر)
   let remainNew = mustNew - finalNew;
   let remainOld = remainNew * 100;
   let remainUSD = rate > 0 ? (remainNew / rate) : 0;
@@ -346,7 +542,6 @@ function calculateTotal(){
   rNewEl.innerText = format(remainNew);
   rUSDEl.innerText = format(remainUSD.toFixed(2));
 
-  // تطبيق شرط الألوان (إذا كان المتبقي أكبر من 0 يعني أصغر من المطلوب -> أحمر، وإذا مساوي أو أصغر -> أخضر)
   if (remainNew > 0) {
     rOldEl.className = "text-red";
     rNewEl.className = "text-red";
@@ -378,16 +573,17 @@ function toggleMode(){
   }
 }
 
-function detectSystemMode(){
-  let saved=localStorage.getItem("mode");
-  if(saved){
-    document.body.classList.add(saved);
-  } else {
-    document.body.classList.add("day");
+function initPreferences(){
+  let savedMode = localStorage.getItem("mode");
+  if(savedMode){
+    document.body.className = savedMode;
   }
+  
+  let savedLang = localStorage.getItem("lang") || 'en';
+  setLanguage(savedLang);
 }
 
-detectSystemMode();
+initPreferences();
 calculateTotal();
 
 </script>
