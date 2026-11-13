@@ -121,10 +121,11 @@
       width: 100%;
       box-sizing: border-box;
       font-size: 14px;
+      font-weight: 600;
       border-radius: 6px;
       border: 1px solid var(--border-day);
       outline: none;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
     body.night input {
@@ -135,6 +136,7 @@
 
     input:focus {
       border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25);
     }
 
     label {
@@ -189,22 +191,60 @@
 
     .add-row input {
       flex: 1;
+      font-weight: normal;
     }
 
-    /* ألوان الفئات الجديدة والدولار */
-    #new500 { background-color: rgba(245, 198, 203, 0.25); }
-    #new200 { background-color: rgba(224, 204, 255, 0.25); }
-    #new100 { background-color: rgba(255, 229, 180, 0.25); }
-    #new50  { background-color: rgba(255, 243, 205, 0.25); }
-    #new25  { background-color: rgba(204, 229, 255, 0.25); }
-    #new10  { background-color: rgba(212, 237, 218, 0.25); }
+    /* === ألوان فئات الليرة السورية المستخرجة بدقة من الصورة === */
+    /* 500: بيج قمحي / رملي دافئ (سنابل القمح) */
+    body.day #new500 { background-color: #EFE4D6; border-color: #D2B89B; color: #543D24; }
+    body.night #new500 { background-color: #3A2E23; border-color: #6E563E; color: #F2E2CE; }
 
-    #usd100 { background: rgba(209, 236, 241, 0.25); }
-    #usd50  { background: rgba(248, 215, 218, 0.25); }
-    #usd20  { background: rgba(255, 243, 205, 0.25); }
-    #usd10  { background: rgba(212, 237, 218, 0.25); }
-    #usd5   { background: rgba(226, 227, 229, 0.25); }
-    #usd1   { background: rgba(254, 254, 254, 0.1); }
+    /* 200: أخضر زيتوني هادئ (أغصان الزيتون) */
+    body.day #new200 { background-color: #E3ECD8; border-color: #AFC797; color: #2E421D; }
+    body.night #new200 { background-color: #25331E; border-color: #4B693B; color: #D8E8C8; }
+
+    /* 100: بنفسجي لافندر ناعم (زهرة القطن) */
+    body.day #new100 { background-color: #EAE3F4; border-color: #BEAEE2; color: #3D2863; }
+    body.night #new100 { background-color: #2E2342; border-color: #5B4582; color: #E4D8F5; }
+
+    /* 50: برتقالي مشمشي دافئ (الحمضيات) */
+    body.day #new50  { background-color: #FCE6D6; border-color: #F2B58D; color: #6E3311; }
+    body.night #new50  { background-color: #3F2517; border-color: #7D482B; color: #FAD8C0; }
+
+    /* 25: أزرق سماوي / نيلي فاتح (التوت الشامي) */
+    body.day #new25  { background-color: #DFEAFA; border-color: #9BBDF0; color: #193B6E; }
+    body.night #new25  { background-color: #1D2B42; border-color: #385582; color: #D4E4FA; }
+
+    /* 10: وردي توتي / فوشيا هادئ (الوردة الشامية) */
+    body.day #new10  { background-color: #F4DCE6; border-color: #DB9EB8; color: #631E3B; }
+    body.night #new10  { background-color: #3D202D; border-color: #783D57; color: #F5D5E3; }
+
+
+    /* === ألوان فئات الدولار المستخرجة بدقة من الصورة === */
+    /* 100$: أزرق ثلجي مميز */
+    body.day #usd100 { background-color: #E1EDF5; border-color: #9EC0D6; color: #1E4259; }
+    body.night #usd100 { background-color: #1E303D; border-color: #3B5D75; color: #D6E9F5; }
+
+    /* 50$: وردي باهت / خوخي فاتح */
+    body.day #usd50  { background-color: #F5E4E8; border-color: #D9AEB8; color: #5C2834; }
+    body.night #usd50  { background-color: #3B2329; border-color: #70424E; color: #F5DCE2; }
+
+    /* 20$: أخضر مائل للبيج / زيتوني باهت */
+    body.day #usd20  { background-color: #E8EDE4; border-color: #B8C4AE; color: #34402B; }
+    body.night #usd20  { background-color: #272E23; border-color: #4D5945; color: #E2EBDC; }
+
+    /* 10$: برتقالي رملي / خوخي دافئ */
+    body.day #usd10  { background-color: #F6E9DC; border-color: #DBB896; color: #5E3D1C; }
+    body.night #usd10  { background-color: #3B2B1D; border-color: #735337; color: #F5E3D0; }
+
+    /* 5$: أرجواني رمادي باهت */
+    body.day #usd5   { background-color: #ECE7EF; border-color: #C4B8CC; color: #40324A; }
+    body.night #usd5   { background-color: #2E2733; border-color: #594B63; color: #EAE2F0; }
+
+    /* 1$: أخضر رمادي كلاسيكي */
+    body.day #usd1   { background-color: #EAECE9; border-color: #BCC2B9; color: #363D34; }
+    body.night #usd1   { background-color: #262925; border-color: #4B5249; color: #E3E8E1; }
+
 
     /* صندوق النتائج */
     .results-box {
@@ -283,7 +323,7 @@
   <div class="section" style="margin: 0 auto 20px auto; width: 300px;">
     <h2 id="rateTitle">Exchange Rate</h2>
     <label id="rateLabel">New SYP per 1 USD:</label>
-    <input type="number" id="rate" value="0" onfocus="this.select()" oninput="calculateTotal()">
+    <input type="number" id="rate" value="0" onfocus="this.select()" oninput="calculateTotal()" style="font-weight: normal;">
   </div>
 
   <!-- الفئات والإدخال بجانب بعضها -->
@@ -315,13 +355,13 @@
     <div class="section">
       <h2 id="directInputTitle">Direct Input & Add</h2>
       <label id="oldInputLabel">Old SYP Amount:</label>
-      <input type="number" id="oldInput" value="0" onfocus="this.select()" oninput="calculateTotal()">
+      <input type="number" id="oldInput" value="0" onfocus="this.select()" oninput="calculateTotal()" style="font-weight: normal;">
 
       <label id="newInputLabel">New SYP Amount:</label>
-      <input type="number" id="newInput" value="0" onfocus="this.select()" oninput="fromNew();calculateTotal();">
+      <input type="number" id="newInput" value="0" onfocus="this.select()" oninput="fromNew();calculateTotal();" style="font-weight: normal;">
 
       <label id="usdInputLabel">USD Amount:</label>
-      <input type="number" id="usdInput" value="0" onfocus="this.select()" oninput="fromUSD();calculateTotal();">
+      <input type="number" id="usdInput" value="0" onfocus="this.select()" oninput="fromUSD();calculateTotal();" style="font-weight: normal;">
 
       <hr style="margin: 10px 0; border: 0; border-top: 1px solid var(--border-day);">
 
